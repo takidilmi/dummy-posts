@@ -65,12 +65,16 @@ const Post = () => {
     return <NotFound />;
   }
   if (!post || !user) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col h-screen items-center justify-center">
+        <div className="w-32 h-32 border-t-2 border-b-2 border-purple-500 rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
     <>
-      <div className='flex flex-col justify-between h-screen p-10'>
+      <div className="flex flex-col justify-between h-screen p-10">
         <div className="flex text-justify justify-center items-center">
           <div className="flex flex-col sm:w-1/2 w-[80%] border p-4 rounded-md justify-between gap-10">
             <div className="flex flex-col gap-14">

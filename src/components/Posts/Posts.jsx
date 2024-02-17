@@ -16,22 +16,27 @@ const Posts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
   const [deletePostId, setDeletePostId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get('https://dummyjson.com/posts');
         setPosts(response.data.posts);
         if (debouncedSearchTerm) {
           setPosts(
             posts.filter((post) =>
-              post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+              post.title
+                .toLowerCase()
+                .includes(debouncedSearchTerm.toLowerCase())
             )
           );
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error('Error fetching posts:', error);
       }
+      setIsLoading(false);
     };
     fetchPosts();
   }, [debouncedSearchTerm]);
@@ -39,7 +44,13 @@ const Posts = () => {
   const handleDelete = (id) => {
     setDeletePostId(id);
   };
-
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="w-32 h-32 border-t-2 border-b-2 border-purple-500 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   if (!posts) {
     return <div>No posts found</div>;
   }
@@ -92,7 +103,7 @@ const Posts = () => {
             >
               <Link to={`/posts/${post.id}`}>
                 <h2 className="font-bold mb-2">{post.title}</h2>
-                <p className='h-[150px] pr-2 overflow-y-scroll'>{post.body}</p>
+                <p className="h-[150px] pr-2 overflow-y-scroll">{post.body}</p>
               </Link>
               <div className="flex flex-wrap flex-row justify-between items-center">
                 <p>
@@ -107,7 +118,12 @@ const Posts = () => {
                 </p>
                 <p>Reactions: {post.reactions}</p>
               </div>
-                <button className='bg-red-200 rounded px-2 py-1 text-sm' onClick={() => handleDelete(post.id)}>Delete Post</button>
+              <button
+                className="bg-red-200 rounded px-2 py-1 text-sm"
+                onClick={() => handleDelete(post.id)}
+              >
+                Delete Post
+              </button>
             </div>
           ))}
         </div>
