@@ -66,7 +66,7 @@ const Post = () => {
   }
   if (!post || !user) {
     return (
-      <div className="flex flex-col h-screen items-center justify-center">
+      <div className="flex flex-col items-center justify-center h-screen">
         <div className="w-32 h-32 border-t-2 border-b-2 border-purple-500 rounded-full animate-spin"></div>
       </div>
     );
@@ -74,24 +74,25 @@ const Post = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-between h-screen p-10">
-        <div className="flex text-justify justify-center items-center">
+      <div className="relative flex flex-col justify-between h-screen p-10">
+        <Link to={'/posts'} className='absolute text-blue-600 hover:scale-90 top-5 left-5'>Go Home</Link>
+        <div className="flex items-center justify-center text-justify">
           <div className="flex flex-col sm:w-1/2 w-[80%] border p-4 rounded-md justify-between gap-10">
             <div className="flex flex-col gap-14">
               <div>
-                <h2 className="font-bold mb-2">{post.title}</h2>
+                <h2 className="mb-2 font-bold">{post.title}</h2>
                 <p>{post.body}</p>
               </div>
               <h3>
                 <span>Author:</span> {user.firstName} {user.lastName}
               </h3>
             </div>
-            <div className="flex flex-wrap flex-row justify-between items-center">
+            <div className="flex flex-row flex-wrap items-center justify-between">
               <p className="flex flex-wrap justify-between">
                 {post.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="mr-2 bg-gray-200 rounded px-2 py-1 text-sm"
+                    className="px-2 py-1 mr-2 text-sm bg-gray-200 rounded"
                   >
                     {tag}
                   </span>
@@ -99,7 +100,7 @@ const Post = () => {
               </p>
               <div className="flex flex-col items-center justify-center">
                 <p>Reactions: {post.reactions}</p>
-                <div className="flex gap-5 items-center justify-center">
+                <div className="flex items-center justify-center gap-5">
                   <ThumbUpAltIcon
                     cursor="pointer"
                     onClick={handleReact}
@@ -113,9 +114,9 @@ const Post = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col p-4 justify-center items-center">
+        <div className="flex flex-col items-center justify-center p-4">
           <h2>Suggested Posts</h2>
-          <div className="flex p-2 flex-wrap flex-row border rounded-md justify-center gap-4">
+          <div className="flex flex-row flex-wrap justify-center gap-4 p-2 border rounded-md">
             {suggestedPosts.map((post) => (
               <Link
                 className="flex flex-col justify-between border p-2 text-wrap h-[100px] w-[300px]"
@@ -127,7 +128,7 @@ const Post = () => {
                   {post.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="mr-2 bg-gray-200 rounded px-2 py-1 text-sm"
+                      className="px-2 py-1 mr-2 text-sm bg-gray-200 rounded"
                     >
                       {tag}
                     </span>
