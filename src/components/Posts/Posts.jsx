@@ -19,14 +19,18 @@ const Posts = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await axios.get('https://dummyjson.com/posts');
-      setPosts(response.data.posts);
-      if (debouncedSearchTerm) {
-        setPosts(
-          posts.filter((post) =>
-            post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-          )
-        );
+      try {
+        const response = await axios.get('https://dummyjson.com/posts');
+        setPosts(response.data.posts);
+        if (debouncedSearchTerm) {
+          setPosts(
+            posts.filter((post) =>
+              post.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
       }
     };
     fetchPosts();
@@ -35,6 +39,10 @@ const Posts = () => {
   const handleDelete = (id) => {
     setDeletePostId(id);
   };
+
+  if (!posts) {
+    return <div>No posts found</div>;
+  }
 
   return (
     <>
@@ -61,7 +69,7 @@ const Posts = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <div className="flex flex-col justify-center p-5 items-center">
+      <div className="flex flex-col text-justify justify-center p-5 items-center">
         <Autocomplete
           freeSolo
           options={posts.map((post) => post.title)}
@@ -79,12 +87,12 @@ const Posts = () => {
         <div className="grid p-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {posts.map((post) => (
             <div
-              className="border flex flex-col justify-between p-4 rounded-md"
+              className="border flex flex-col justify-between p-4 rounded-md gap-5"
               key={post.id}
             >
               <Link to={`/posts/${post.id}`}>
                 <h2 className="font-bold mb-2">{post.title}</h2>
-                <p>{post.body}</p>
+                <p className='h-[150px] pr-2 overflow-y-scroll'>{post.body}</p>
               </Link>
               <div className="flex flex-wrap flex-row justify-between items-center">
                 <p>
@@ -98,8 +106,8 @@ const Posts = () => {
                   ))}
                 </p>
                 <p>Reactions: {post.reactions}</p>
-                <button onClick={() => handleDelete(post.id)}>Delete</button>
               </div>
+                <button className='bg-red-200 rounded px-2 py-1 text-sm' onClick={() => handleDelete(post.id)}>Delete Post</button>
             </div>
           ))}
         </div>
