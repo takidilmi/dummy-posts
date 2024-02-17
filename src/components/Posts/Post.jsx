@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 
 const Post = () => {
   const [post, setPost] = useState(null);
@@ -34,6 +35,12 @@ const Post = () => {
     setPost({ ...post, reactions: newReactions });
   };
 
+  const handleDislike = () => {
+    const newReactions = post.reactions > 0 ? post.reactions - 1 : 0;
+    localStorage.setItem(`post-${id}-reactions`, newReactions);
+    setPost({ ...post, reactions: newReactions });
+  };
+
   if (!post || !user) {
     return <div>Loading...</div>;
   }
@@ -42,7 +49,7 @@ const Post = () => {
     <>
       <div className="flex justify-center items-center">
         <div className="flex flex-col w-1/2 border p-4 rounded-md justify-between gap-10">
-          <div className='flex flex-col gap-14'>
+          <div className="flex flex-col gap-14">
             <div>
               <h2 className="font-bold mb-2">{post.title}</h2>
               <p>{post.body}</p>
@@ -64,7 +71,10 @@ const Post = () => {
             </p>
             <div className="flex flex-col items-center justify-center">
               <p>Reactions: {post.reactions}</p>
-              <button onClick={handleReact}>React</button>
+              <div className='flex gap-5 items-center justify-center'>
+                <ThumbUpAltIcon cursor="pointer" onClick={handleReact} />
+                <ThumbDownAltIcon cursor="pointer" onClick={handleDislike} />
+              </div>
             </div>
           </div>
         </div>
