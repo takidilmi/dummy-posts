@@ -4,11 +4,18 @@ import { Link } from 'react-router-dom';
 import useDebounce from './useDebounce';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+  const [deletePostId, setDeletePostId] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -25,9 +32,36 @@ const Posts = () => {
     fetchPosts();
   }, [debouncedSearchTerm]);
 
+  const handleDelete = (id) => {
+    setDeletePostId(id);
+  };
+
   return (
     <>
-      <div className='flex flex-col justify-center p-5 items-center'>
+      <Dialog
+        open={deletePostId !== null}
+        onClose={() => setDeletePostId(null)}
+      >
+        <DialogTitle>Delete Post</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this post? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeletePostId(null)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setPosts(posts.filter((post) => post.id !== deletePostId));
+              setDeletePostId(null);
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <div className="flex flex-col justify-center p-5 items-center">
         <Autocomplete
           freeSolo
           options={posts.map((post) => post.title)}
@@ -64,6 +98,7 @@ const Posts = () => {
                   ))}
                 </p>
                 <p>Reactions: {post.reactions}</p>
+                <button onClick={() => handleDelete(post.id)}>Delete</button>
               </div>
             </div>
           ))}
