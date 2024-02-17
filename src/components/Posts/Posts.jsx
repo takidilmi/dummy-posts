@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -14,19 +15,28 @@ const Posts = () => {
     fetchPosts();
   }, []);
 
+  const filteredPosts = posts.filter(post =>
+    post.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
+      <input
+        type="text"
+        placeholder="Search posts"
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+      />
       <div className="grid p-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
-          <Link
+        {filteredPosts.map((post) => (
+          <div
             className="border flex flex-col justify-between p-4 rounded-md"
-            to={{ pathname: `/posts/${post.id}`, state: { post } }}
             key={post.id}
           >
-            <div>
+            <Link to={`/posts/${post.id}`}>
               <h2 className="font-bold mb-2">{post.title}</h2>
               <p>{post.body}</p>
-            </div>
+            </Link>
             <div className="flex flex-wrap flex-row justify-between items-center">
               <p>
                 {post.tags.map((tag, index) => (
@@ -40,7 +50,7 @@ const Posts = () => {
               </p>
               <p>Reactions: {post.reactions}</p>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </>
